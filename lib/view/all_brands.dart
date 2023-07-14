@@ -1,5 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:pocketbuy_admin/core/colors.dart';
+
 
 class AllBrands extends StatelessWidget {
   const AllBrands({super.key});
@@ -16,48 +17,65 @@ class AllBrands extends StatelessWidget {
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18),
-          child: GridView.builder(
-            physics: BouncingScrollPhysics(),
-            itemCount: 9,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, crossAxisSpacing: 20, mainAxisSpacing: 20),
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.only(left: 5, right: 5),
-                child: Material(
-                  elevation: 7,
-                  borderRadius: BorderRadius.circular(12),
-                  child: InkWell(
-                    onTap: () {},
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.white,
-                      ),
-                      // margin: EdgeInsets.all(0),
-                      // elevation: 5,
-                      // height: 600,
+          child: StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('pocketBuy')
+                .doc('admin')
+                .collection('brands')
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.data == null) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
 
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            height: 125,
-                            width: 140,
-                            decoration: BoxDecoration(
-                                color: Colors.amber,
-                                borderRadius: BorderRadius.circular(20),
-                                image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: NetworkImage(
-                                        'https://img.freepik.com/free-icon/mac-os_318-10374.jpg'))),
+              return GridView.builder(
+                physics: BouncingScrollPhysics(),
+                itemCount: snapshot.data!.docs.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 20),
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 5, right: 5),
+                    child: Material(
+                      elevation: 7,
+                      borderRadius: BorderRadius.circular(12),
+                      child: InkWell(
+                        onTap: () {},
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.white,
                           ),
-                          Text('Apple'),
-                        ],
+                          // margin: EdgeInsets.all(0),
+                          // elevation: 5,
+                          // height: 600,
+
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                height: 125,
+                                width: 140,
+                                decoration: BoxDecoration(
+                                    color: Colors.amber,
+                                    borderRadius: BorderRadius.circular(20),
+                                    image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: NetworkImage(snapshot
+                                            .data!.docs[index]['brandImg']))),
+                              ),
+                              Text(snapshot.data!.docs[index]['brandName']),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                },
               );
             },
           ),

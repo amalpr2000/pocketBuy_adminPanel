@@ -1,9 +1,24 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pocketbuy_admin/core/colors.dart';
 import 'package:pocketbuy_admin/core/constants.dart';
+import 'package:pocketbuy_admin/service/add_brand_service.dart';
+import 'package:pocketbuy_admin/utils/snackbar.dart';
 
-class AddBrand extends StatelessWidget {
-  const AddBrand({super.key});
+class AddBrand extends StatefulWidget {
+  AddBrand({super.key});
+
+  @override
+  State<AddBrand> createState() => _AddBrandState();
+}
+
+class _AddBrandState extends State<AddBrand> {
+  XFile? image;
+  TextEditingController brandNameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -19,35 +34,50 @@ class AddBrand extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 18),
           child: Column(
             children: [
-              Container(
-                height: 200,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    color: kSecondaryColor,
-                    border: Border.all(color: kSecondaryColor),
-                    borderRadius: BorderRadius.circular(8)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.add,
-                      color: Colors.white,
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Text(
-                      'Add Image',
-                      style: TextStyle(color: Colors.white),
-                    )
-                  ],
-                ),
+              InkWell(
+                onTap: () async {
+                  log('irmr55ds5afjl;kfsaj');
+                  final pickedImg = await ImagePicker()
+                      .pickImage(source: ImageSource.gallery);
+                  log(pickedImg.toString());
+                  if (pickedImg != null) {
+                    image = pickedImg;
+
+                    setState(() {});
+                  }
+                },
+                child: Container(
+                    height: 200,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        color: kSecondaryColor,
+                        border: Border.all(color: kSecondaryColor),
+                        borderRadius: BorderRadius.circular(8)),
+                    child: image == null
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.add,
+                                color: Colors.white,
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Text(
+                                'Add Image',
+                                style: TextStyle(color: Colors.white),
+                              )
+                            ],
+                          )
+                        : Image.file(File(image!.path))),
               ),
               kHeight40,
               Material(
                 elevation: 10,
                 borderRadius: BorderRadius.circular(12),
                 child: TextFormField(
+                  controller: brandNameController,
                   decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
@@ -73,7 +103,14 @@ class AddBrand extends StatelessWidget {
                   height: 45,
                   child: ElevatedButton(
                       // style: ButtonStyle(backgroundColor: Colors.orange),
-                      onPressed: () {},
+                      onPressed: () async {
+                        await addBrand(image!);
+                        snack(context,
+                            message:
+                                '${brandNameController.text} brand added successfully',
+                            color: Colors.green);
+                        Navigator.of(context).pop();
+                      },
                       child: const Text(
                         'Add Brand',
                         style: TextStyle(color: kwhite),
@@ -81,5 +118,11 @@ class AddBrand extends StatelessWidget {
             ],
           ),
         ));
+  }
+
+  addBrand(XFile image) async {
+    final firebaseImgUrl = await AddBrandService().imgUpload(image);
+    await AddBrandService().addBrand(
+        brandImg: firebaseImgUrl, brandName: brandNameController.text);
   }
 }

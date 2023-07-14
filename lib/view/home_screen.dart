@@ -25,15 +25,25 @@ class HomeScreen extends StatelessWidget {
               return ListTile(
                 onTap: () {
                   if (index == 0) {
-                    Get.to(() => AllProducts());
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => AllProducts(),
+                    ));
                   } else if (index == 1) {
-                    Get.to(() => AllBrands());
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => AllBrands(),
+                    ));
                   } else if (index == 2) {
-                    Get.to(() => AddBrand());
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => AddBrand(),
+                    ));
                   } else if (index == 3) {
-                    Get.to(() => AddProduct());
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => AddProduct(),
+                    ));
                   } else if (index == 4) {
-                    Get.to(() => AllOrders());
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => AllOrders(),
+                    ));
                   }
                 },
                 shape: RoundedRectangleBorder(

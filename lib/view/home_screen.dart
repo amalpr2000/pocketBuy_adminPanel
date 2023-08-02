@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pocketbuy_admin/core/colors.dart';
+import 'package:pocketbuy_admin/model/brand_model.dart';
+import 'package:pocketbuy_admin/service/add_brand_service.dart';
+import 'package:pocketbuy_admin/view/add_banner.dart';
 import 'package:pocketbuy_admin/view/add_brand.dart';
 import 'package:pocketbuy_admin/view/add_product.dart';
 import 'package:pocketbuy_admin/view/all_brands.dart';
-import 'package:pocketbuy_admin/view/all_orders.dart';
+import 'package:pocketbuy_admin/view/order/all_orders.dart';
 import 'package:pocketbuy_admin/view/all_product.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -23,7 +26,7 @@ class HomeScreen extends StatelessWidget {
         child: ListView.separated(
             itemBuilder: (context, index) {
               return ListTile(
-                onTap: () {
+                onTap: () async {
                   if (index == 0) {
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => AllProducts(),
@@ -37,12 +40,18 @@ class HomeScreen extends StatelessWidget {
                       builder: (context) => AddBrand(),
                     ));
                   } else if (index == 3) {
+                    List<BrandModel> brandList =
+                        await AddBrandService().getbrands();
                     Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => AddProduct(),
+                      builder: (context) => AddProduct(brandOptions: brandList),
                     ));
                   } else if (index == 4) {
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => AllOrders(),
+                    ));
+                  } else if (index == 5) {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => AddBanner(),
                     ));
                   }
                 },
@@ -78,6 +87,7 @@ List menuTitle = [
   'Add Brand',
   'Add Product',
   'All Orders',
+  'Banner'
 ];
 List menuIcon = [
   Icons.store_rounded,
@@ -85,4 +95,5 @@ List menuIcon = [
   Icons.add_shopping_cart_rounded,
   Icons.add_business_rounded,
   Icons.wallet,
+  Icons.image_rounded
 ];

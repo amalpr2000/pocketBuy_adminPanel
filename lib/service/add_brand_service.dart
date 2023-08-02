@@ -30,4 +30,20 @@ class AddBrandService {
     final brandjson = brand.toJson();
     await brandCollection.set(brandjson);
   }
+
+  Future<List<BrandModel>> getbrands() async {
+    List<BrandModel> brandList = [];
+    final brandCollection = await FirebaseFirestore.instance
+        .collection('pocketBuy')
+        .doc('admin')
+        .collection('brands')
+        .get();
+    List data = brandCollection.docs;
+    for (var element in data) {
+      BrandModel model = BrandModel(
+          brandImg: element['brandImg'], brandName: element['brandName']);
+      brandList.add(model);
+    }
+    return brandList;
+  }
 }

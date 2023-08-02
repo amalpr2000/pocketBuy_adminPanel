@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pocketbuy_admin/core/colors.dart';
-import 'package:pocketbuy_admin/view/home_screen.dart';
+import 'package:pocketbuy_admin/view/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
                   color: Color(0XFF8B8B8B),
                   fontSize: 18,
                   fontFamily: 'Sniglet'))),
-      home: HomeScreen(),
+      home: SplashScreen(),
     );
   }
 }

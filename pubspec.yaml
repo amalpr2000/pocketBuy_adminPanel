@@ -40,6 +40,8 @@ dependencies:
   cloud_firestore: ^4.8.2
   firebase_storage: ^11.2.4
   image_picker: ^0.8.9
+  loading_animation_widget: ^1.2.0+4
+  order_tracker_zen: ^1.0.0+4
 
 dev_dependencies:
   flutter_test:

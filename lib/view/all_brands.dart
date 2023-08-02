@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:get/get.dart';
+import 'package:pocketbuy_admin/core/constants.dart';
+import 'package:pocketbuy_admin/utils/snackbar.dart';
 
 class AllBrands extends StatelessWidget {
   const AllBrands({super.key});
@@ -57,17 +59,109 @@ class AllBrands extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Container(
-                                height: 125,
-                                width: 140,
-                                decoration: BoxDecoration(
-                                    color: Colors.amber,
-                                    borderRadius: BorderRadius.circular(20),
-                                    image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: NetworkImage(snapshot
-                                            .data!.docs[index]['brandImg']))),
-                              ),
+                              Stack(children: [
+                                Container(
+                                  height: 125,
+                                  width: 140,
+                                  decoration: BoxDecoration(
+                                      color: Colors.amber,
+                                      borderRadius: BorderRadius.circular(20),
+                                      image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: NetworkImage(snapshot
+                                              .data!.docs[index]['brandImg']))),
+                                ),
+                                Positioned(
+                                  left: displayWidth * 0.26,
+                                  child: IconButton(
+                                      onPressed: () async {
+                                        try {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              titlePadding: EdgeInsets.only(
+                                                  left: 90, right: 90, top: 20),
+                                              title: Text('Are you Sure ?'),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                      'This will delete the brand'),
+                                                  kHeight20,
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
+                                                      ElevatedButton(
+                                                          onPressed: () {
+                                                            Get.back();
+                                                          },
+                                                          child:
+                                                              Text('Cancel')),
+                                                      ElevatedButton(
+                                                          onPressed: () async {
+                                                            await FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    'pocketBuy')
+                                                                .doc('admin')
+                                                                .collection(
+                                                                    'brands')
+                                                                .doc(snapshot
+                                                                    .data!
+                                                                    .docs[index]
+                                                                    .id)
+                                                                .delete();
+                                                            snack(context,
+                                                                message:
+                                                                    'Brand deleted successfully',
+                                                                color:
+                                                                    Colors.red);
+                                                            Get.back();
+                                                          },
+                                                          child:
+                                                              Text('Continue'))
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                          // Get.defaultDialog(
+
+                                          //   title: 'Are you sure?',
+                                          //   middleText:
+                                          //       'Do you really want to delete this brand?',
+                                          //   onCancel: () => Get.back(),
+                                          //   textConfirm: 'Yes',
+                                          //   textCancel: 'No',
+                                          //   radius: 12,
+                                          //   onConfirm: () async {
+                                          //     await FirebaseFirestore.instance
+                                          //         .collection('pocketBuy')
+                                          //         .doc('admin')
+                                          //         .collection('brands')
+                                          //         .doc(snapshot
+                                          //             .data!.docs[index].id)
+                                          //         .delete();
+                                          //     snack(context,
+                                          //         message:
+                                          //             'Brand deleted successfully',
+                                          //         color: Colors.red);
+                                          //   },
+                                          // );
+                                        } catch (error) {
+                                          print(
+                                              'Failed to delete category: $error');
+                                        }
+                                      },
+                                      icon: Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                      )),
+                                ),
+                              ]),
                               Text(snapshot.data!.docs[index]['brandName']),
                             ],
                           ),

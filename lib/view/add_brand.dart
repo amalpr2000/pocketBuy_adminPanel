@@ -1,12 +1,11 @@
-import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pocketbuy_admin/core/colors.dart';
 import 'package:pocketbuy_admin/core/constants.dart';
 import 'package:pocketbuy_admin/service/add_brand_service.dart';
+import 'package:pocketbuy_admin/utils/loading_animation.dart';
 import 'package:pocketbuy_admin/utils/snackbar.dart';
 
 class AddBrand extends StatefulWidget {
@@ -36,13 +35,11 @@ class _AddBrandState extends State<AddBrand> {
             children: [
               InkWell(
                 onTap: () async {
-                  log('irmr55ds5afjl;kfsaj');
                   final pickedImg = await ImagePicker()
                       .pickImage(source: ImageSource.gallery);
-                  log(pickedImg.toString());
+
                   if (pickedImg != null) {
                     image = pickedImg;
-
                     setState(() {});
                   }
                 },
@@ -104,12 +101,16 @@ class _AddBrandState extends State<AddBrand> {
                   child: ElevatedButton(
                       // style: ButtonStyle(backgroundColor: Colors.orange),
                       onPressed: () async {
+                        loadingAnimation();
+
                         await addBrand(image!);
+                        Get.back();
+                        Get.back();
                         snack(context,
                             message:
                                 '${brandNameController.text} brand added successfully',
                             color: Colors.green);
-                        Navigator.of(context).pop();
+                        
                       },
                       child: const Text(
                         'Add Brand',
